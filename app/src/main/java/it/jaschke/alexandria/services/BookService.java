@@ -159,7 +159,6 @@ public class BookService extends IntentService {
 
         try {
             // Edit JG: testing bookJsonString, otherwise application will crash
-            // TODO: check if an internet connection is available before trying to fetch book information
             if (Strings.isNotEmpty(bookJsonString)) {
                 JSONObject bookJson = new JSONObject(bookJsonString);
                 JSONArray bookArray;
