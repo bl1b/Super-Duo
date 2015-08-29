@@ -30,7 +30,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 /**
- * Created by jan on 21.08.2015.
+ * Class Net.
+ *
+ * A Utility class to provide some basic Internet-Connection based functions.
+ *
+ * @author Jan Grünewald
+ * @version 1.0.0
  */
 public class Net {
 

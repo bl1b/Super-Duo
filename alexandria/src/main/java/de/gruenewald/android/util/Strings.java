@@ -26,7 +26,12 @@
 package de.gruenewald.android.util;
 
 /**
- * Created by jan on 21.08.2015.
+ * Class String.
+ *
+ * A Utility class to provide some basic string related functions.
+ *
+ * @author Jan Grünewald
+ * @version 1.0.0
  */
 public class Strings {
 
