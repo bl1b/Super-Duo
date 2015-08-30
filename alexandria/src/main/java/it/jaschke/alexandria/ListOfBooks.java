@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import it.jaschke.alexandria.api.BookListAdapter;
@@ -26,6 +27,8 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     private ListView bookList;
     private int position = ListView.INVALID_POSITION;
     private EditText searchText;
+    // Edit JG: added ImageButton property
+    private ImageButton searchButton;
 
     private final int LOADER_ID = 10;
 
@@ -39,7 +42,31 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Edit JG: additional null-checks for view-objects; moved actions dealing with the
+        // data-model on onViewCreated() so that the view can be displayed faster
+        View rootView = inflater.inflate(R.layout.fragment_list_of_books, container, false);
+        if (rootView != null) {
+            if (rootView.findViewById(R.id.searchText) instanceof EditText) {
+                searchText = (EditText) rootView.findViewById(R.id.searchText);
+            }
 
+            if (rootView.findViewById(R.id.listOfBooks) instanceof ListView) {
+                bookList = (ListView) rootView.findViewById(R.id.listOfBooks);
+            }
+
+            if (rootView.findViewById(R.id.searchButton) instanceof ImageButton) {
+                searchButton = (ImageButton) rootView.findViewById(R.id.searchButton);
+            }
+        }
+
+        getActivity().setTitle(R.string.books);
+        return rootView;
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // setup the booklist and its adapter
         Cursor cursor = getActivity().getContentResolver().query(
                 AlexandriaContract.BookEntry.CONTENT_URI,
                 null, // leaving "columns" null just returns all the columns.
@@ -48,55 +75,54 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                 null  // sort order
         );
 
+        if (cursor != null) {
+            bookListAdapter = new BookListAdapter(getActivity(), cursor, 0);
+            if (bookList != null) {
+                bookList.setAdapter(bookListAdapter);
+                bookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-        bookListAdapter = new BookListAdapter(getActivity(), cursor, 0);
-        View rootView = inflater.inflate(R.layout.fragment_list_of_books, container, false);
-        searchText = (EditText) rootView.findViewById(R.id.searchText);
-        rootView.findViewById(R.id.searchButton).setOnClickListener(
-                new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        ListOfBooks.this.restartLoader();
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                        Cursor cursor = bookListAdapter.getCursor();
+                        if (cursor != null && cursor.moveToPosition(position)) {
+                            ((Callback) getActivity())
+                                    .onItemSelected(cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry._ID)));
+                        }
                     }
-                }
-        );
-
-        bookList = (ListView) rootView.findViewById(R.id.listOfBooks);
-        bookList.setAdapter(bookListAdapter);
-
-        bookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Cursor cursor = bookListAdapter.getCursor();
-                if (cursor != null && cursor.moveToPosition(position)) {
-                    ((Callback)getActivity())
-                            .onItemSelected(cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry._ID)));
-                }
+                });
             }
-        });
+        }
 
-        return rootView;
+        if (searchButton != null) {
+            searchButton.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ListOfBooks.this.restartLoader();
+                        }
+                    }
+            );
+        }
     }
 
-    private void restartLoader(){
+    private void restartLoader() {
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        final String selection = AlexandriaContract.BookEntry.TITLE +" LIKE ? OR " + AlexandriaContract.BookEntry.SUBTITLE + " LIKE ? ";
-        String searchString =searchText.getText().toString();
+        final String selection = AlexandriaContract.BookEntry.TITLE + " LIKE ? OR " + AlexandriaContract.BookEntry.SUBTITLE + " LIKE ? ";
+        String searchString = searchText.getText().toString();
 
-        if(searchString.length()>0){
-            searchString = "%"+searchString+"%";
+        if (searchString.length() > 0) {
+            searchString = "%" + searchString + "%";
             return new CursorLoader(
                     getActivity(),
                     AlexandriaContract.BookEntry.CONTENT_URI,
                     null,
                     selection,
-                    new String[]{searchString,searchString},
+                    new String[]{searchString, searchString},
                     null
             );
         }
@@ -124,9 +150,11 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
         bookListAdapter.swapCursor(null);
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        activity.setTitle(R.string.books);
-    }
+    // Edit JG: Set Title onResume instead of onAttach
+    //@Override public void onResume() {
+    //    super.onResume();
+    //    if(getActivity() != null) {
+    //        getActivity().setTitle(R.string.books);
+    //    }
+    //}
 }
