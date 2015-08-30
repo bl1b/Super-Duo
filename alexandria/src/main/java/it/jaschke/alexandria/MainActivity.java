@@ -86,15 +86,20 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
                 .commit();
     }
 
-    public void setTitle(int titleId) {
+    @Override public void setTitle(int titleId) {
+        super.setTitle(titleId);
         title = getString(titleId);
+        // Edit JG: call restoreActionBar after setting the title; this is required so that the
+        // title is required correctly after closing a fragment with the hardware back button
+        restoreActionBar();
     }
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            // TODO: setup correct navigation structure
-//            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            // setNavigationMode is deprecated since the use of an actionBar is deprecated
+            // TODO: implement use of ToolBar instead of ActionBar (greater change maybe for 1.2.0)
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setTitle(title);
         }
