@@ -1,28 +1,23 @@
-<!--
-  ~ /**
-  ~  * ****************************************************************************
-  ~  * Copyright (c) 2015 by Jan Grünewald.
-  ~  * jan.gruenewald84@googlemail.com
-  ~  * <p>
-  ~  * This file is part of 'Super Duo'. 'Super Duo' was developed as
-  ~  * part of the Android Developer Nanodegree by Udacity.
-  ~  * <p>
-  ~  * 'Super Duo' is free software: you can redistribute it and/or modify
-  ~  * it under the terms of the GNU General Public License as published by
-  ~  * the Free Software Foundation, either version 3 of the License, or
-  ~  * (at your option) any later version.
-  ~  * <p>
-  ~  * 'Super Duo' is distributed in the hope that it will be useful,
-  ~  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~  * GNU General Public License for more details.
-  ~  * <p>
-  ~  * You should have received a copy of the GNU General Public License
-  ~  * along with 'Super Duo'.  If not, see <http://www.gnu.org/licenses/>.
-  ~  * ****************************************************************************
-  ~  */
-  -->
-
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2015 by Jan Grünewald.
+  ~ *****************************************************************************
+  ~ This file is part of 'Super-Duo. 'Super-Duo' was developed as  part of the
+  ~ Android Developer Nanodegree by Udacity. For further information see:
+  ~ https://www.udacity.com/course/android%2Ddeveloper%2Dnanodegree%2D%2Dnd801
+  ~
+  ~ 'Super-Duo' is free software: you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by the
+  ~ Free Software Foundation, either version 3 of the License, or (at your
+  ~ option) any later version.
+  ~
+  ~ 'Super-Duo' is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with 'Super-Duo'.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -30,7 +25,7 @@
     android:layout_height="match_parent"
     tools:context="de.gruenewald.android.alexandria.BarcodeScannerActivity">
 
-    <it.jaschke.alexandria.CameraPreview.CameraPreview
+    <de.gruenewald.android.alexandria.CameraPreview
         android:id="@+id/cameraPreview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

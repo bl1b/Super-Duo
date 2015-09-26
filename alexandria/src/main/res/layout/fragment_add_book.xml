@@ -15,11 +15,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="@dimen/abc_dialog_list_padding_vertical_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginLeft="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginStart="@dimen/abc_list_item_padding_horizontal_material"
+            android:layout_marginTop="@dimen/abc_dialog_list_padding_vertical_material"
             android:textAppearance="@style/My_TextAppearance_Error"
             android:visibility="gone"
             tools:text="Dies ist ein Fehler"/>
@@ -28,24 +28,24 @@
             android:id="@+id/eancontainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textAddBookError"
+            android:layout_alignRight="@+id/textAddBookError"
             android:layout_below="@+id/textAddBookError"
             android:layout_centerHorizontal="true"
-            android:orientation="horizontal"
             android:layout_marginTop="@dimen/abc_dialog_list_padding_vertical_material"
-            android:layout_alignLeft="@+id/textAddBookError"
-            android:layout_alignRight="@+id/textAddBookError">
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/ean"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:hint="@string/input_hint"
                 android:inputType="number"
                 android:maxLength="@integer/ean_size"
                 android:maxLines="1"
                 android:minEms="@integer/ean_width"
                 android:paddingRight="20dp"
-                android:layout_weight="1"
                 android:saveEnabled="true"/>
 
             <Button
