@@ -26,6 +26,8 @@
     <string name="share_text">A must read book: </string>
 
     <string name="error_nointernet">No internet connection available. Please check again later.</string>
+    <string name="error_barcode_default">An error scanning the barcode occured.</string>
+    <string name="error_barcode_camera">Could not open camera.</string>
 
     <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.
     The original version of this app was built by Sascha Jaschke, and a modified version is given to students in the Udacity Android Nanodegree program.

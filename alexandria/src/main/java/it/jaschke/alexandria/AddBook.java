@@ -1,7 +1,6 @@
 package it.jaschke.alexandria;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -17,8 +16,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import de.gruenewald.android.alexandria.BarcodeScannerActivity;
 import de.gruenewald.android.util.Net;
@@ -134,21 +131,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     @Override
                     public void onClick(View v) {
                         Intent myCameraIntent = new Intent(getActivity(), BarcodeScannerActivity.class);
-                        startActivity(myCameraIntent);
-                        // This is the callback method that the system will invoke when your button is
-                        // clicked. You might do this by launching another app or by including the
-                        //functionality directly in this app.
-                        // Hint: Use a Try/Catch block to handle the Intent dispatch gracefully, if you
-                        // are using an external app.
-                        //when you're done, remove the toast below.
-                        /*
-                        Context context = getActivity();
-                        CharSequence text = "This button should let you scan a book for its barcode!";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.show();
-                        */
+                        startActivityForResult(myCameraIntent, BarcodeScannerActivity.ACTIVITY_REQUEST_CODE_BARCODE);
                     }
                 });
             }
@@ -186,6 +169,21 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         }
 
         return rootView;
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == BarcodeScannerActivity.ACTIVITY_REQUEST_CODE_BARCODE) {
+            if (resultCode == BarcodeScannerActivity.ACTIVITY_RESULT_CODE_SUCCESS && data != null) {
+                ean.setText(data.getStringExtra(BarcodeScannerActivity.ACTIVITY_RESULT_KEY_BARCODE));
+                ean.setHint("");
+            } else if (resultCode == BarcodeScannerActivity.ACTIVITY_RESULT_CODE_ERROR_CAMERA) {
+                raiseError(getString(R.string.error_barcode_camera));
+            } else {
+                raiseError(getString(R.string.error_barcode_default));
+            }
+        }
     }
 
     private void restartLoader() {
