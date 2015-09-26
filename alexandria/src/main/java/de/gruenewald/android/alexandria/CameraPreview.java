@@ -1,15 +1,39 @@
-package it.jaschke.alexandria.CameraPreview;
+/******************************************************************************
+ * Copyright (c) 2015 by Jan Grünewald.                                       *
+ * ****************************************************************************
+ * This file is part of 'Super-Duo. 'Super-Duo' was developed as  part of the *
+ * Android Developer Nanodegree by Udacity. For further information see:      *
+ * https://www.udacity.com/course/android%2Ddeveloper%2Dnanodegree%2D%2Dnd801 *
+ * *
+ * 'Super-Duo' is free software: you can redistribute it and/or modify it     *
+ * under the terms of the GNU General Public License as published by the      *
+ * Free Software Foundation, either version 3 of the License, or (at your     *
+ * option) any later version.                                                 *
+ * *
+ * 'Super-Duo' is distributed in the hope that it will be useful, but         *
+ * WITHOUT ANY WARRANTY; without even the implied warranty of                 *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ * *
+ * You should have received a copy of the GNU General Public License          *
+ * along with 'Super-Duo'.  If not, see <http://www.gnu.org/licenses/>.       *
+ ******************************************************************************/
 
 /*
  * Barebones implementation of displaying camera preview.
- *
- * Created by lisah0 on 2012-02-24
+ * 
+ * Originally Created by lisah0 on 2012-02-24
+ * https://github.com/ZBar/ZBar/blob/master/android/examples/CameraTest/src/net/sourceforge/zbar/android/CameraTest/CameraPreview.java
+ * Modified to suite the Super-Duo Alexandria Project by
+ * Jan Grünewald on 2015-09-25.
  */
+package de.gruenewald.android.alexandria;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.hardware.Camera.AutoFocusCallback;
+import android.hardware.Camera.PreviewCallback;
 import android.os.Build;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -17,43 +41,25 @@ import android.view.View;
 
 import java.io.IOException;
 
-/** A basic Camera preview class */
+/**
+ * A basic Camera preview class
+ */
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, View.OnClickListener {
     private static final String LOG_TAG = CameraPreview.class.getSimpleName();
 
-    /**
-     * The id of the camera. 0 should be the rear camera.
-     * 1 seems to be the face camera.
-     */
-    private static final int CAMERA_ID = 0x0;
-
     private SurfaceHolder mHolder;
     private Camera mCamera;
-    private Camera.PreviewCallback mPreviewCallback;
-    private Camera.AutoFocusCallback mAutoFocusCallback;
+    private PreviewCallback previewCallback;
+    private AutoFocusCallback autoFocusCallback;
 
+    public CameraPreview(Context context, Camera camera, PreviewCallback previewCb, AutoFocusCallback autoFocusCb) {
+        super(context);
+        mCamera = camera;
+        previewCallback = previewCb;
+        autoFocusCallback = autoFocusCb;
 
-    public CameraPreview(Context context, AttributeSet attrs) {
-        // Edit JG: use this constructor instead of the default so that the view-class can be used
-        // in layout.xml
-        super(context, attrs);
-
-        try {
-            mCamera = Camera.open(CAMERA_ID);
-            if (mCamera != null) {
-                if (context instanceof Camera.PreviewCallback) {
-                    mPreviewCallback = (Camera.PreviewCallback) context;
-                }
-
-                if (context instanceof Camera.AutoFocusCallback) {
-                    mAutoFocusCallback = (Camera.AutoFocusCallback) context;
-                }
-            }
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Unable to setup camera: " + e.getMessage());
-        }
-
-
+        // Install a SurfaceHolder.Callback so we get notified when the
+        // underlying surface is created and destroyed.
         mHolder = getHolder();
         if (mHolder != null) {
             mHolder.addCallback(this);
@@ -65,8 +71,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
             }
         }
-
-        setOnClickListener(this);
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
@@ -110,17 +114,23 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mCamera.setDisplayOrientation(90);
 
             mCamera.setPreviewDisplay(mHolder);
-            mCamera.setPreviewCallback(mPreviewCallback);
+            mCamera.setPreviewCallback(previewCallback);
             mCamera.startPreview();
-            mCamera.autoFocus(mAutoFocusCallback);
+            mCamera.autoFocus(autoFocusCallback);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error starting camera preview: " + e.getMessage());
         }
     }
 
+    /**
+     * Method has been added to be able to trigger an auto-focus when tapping
+     * on the surfaceview.
+     *
+     * @param v The view-object the OnClick-Event is triggered on.
+     */
     @Override public void onClick(View v) {
-        if (mCamera != null && mAutoFocusCallback != null) {
-            mCamera.autoFocus(mAutoFocusCallback);
+        if (mCamera != null && autoFocusCallback != null) {
+            mCamera.autoFocus(autoFocusCallback);
         }
     }
 }
