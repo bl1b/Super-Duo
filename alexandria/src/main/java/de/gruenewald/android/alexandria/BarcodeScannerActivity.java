@@ -182,18 +182,21 @@ public class BarcodeScannerActivity extends AppCompatActivity {
             int result = scanner.scanImage(barcode);
 
             if (result != 0) {
-                previewing = false;
-                mCamera.setPreviewCallback(null);
-                mCamera.stopPreview();
-
                 SymbolSet syms = scanner.getResults();
                 for (Symbol sym : syms) {
-                    Log.d(LOG_TAG, "Barcode-Result  2: " + sym.getData());
-                    Intent myResultIntent = new Intent();
-                    myResultIntent.putExtra(ACTIVITY_RESULT_KEY_BARCODE, sym.getData());
-                    setResult(ACTIVITY_RESULT_CODE_SUCCESS, myResultIntent);
-                    finishActivity(ACTIVITY_REQUEST_CODE_BARCODE);
-                    finish();
+                    // update: only finish the activity if the scanned code was an EAN-13 code
+                    if (sym.getType() == Symbol.EAN13) {
+                        // only stop previewing if a valid symbol was found
+                        previewing = false;
+                        mCamera.setPreviewCallback(null);
+                        mCamera.stopPreview();
+
+                        Intent myResultIntent = new Intent();
+                        myResultIntent.putExtra(ACTIVITY_RESULT_KEY_BARCODE, sym.getData());
+                        setResult(ACTIVITY_RESULT_CODE_SUCCESS, myResultIntent);
+                        finishActivity(ACTIVITY_REQUEST_CODE_BARCODE);
+                        finish();
+                    }
                 }
             }
         }
