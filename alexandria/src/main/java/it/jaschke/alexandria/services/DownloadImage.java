@@ -19,15 +19,19 @@ public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
     }
 
     protected Bitmap doInBackground(String... urls) {
-        String urlDisplay = urls[0];
         Bitmap bookCover = null;
-        try {
-            InputStream in = new java.net.URL(urlDisplay).openStream();
-            bookCover = BitmapFactory.decodeStream(in);
-        } catch (Exception e) {
-            Log.e("Error", e.getMessage());
-            e.printStackTrace();
+        // Edit JG: do not try to load an image from an empty/not existing url
+        if (urls != null && urls.length > 0 && !urls[0].isEmpty()) {
+            String urlDisplay = urls[0];
+            try {
+                InputStream in = new java.net.URL(urlDisplay).openStream();
+                bookCover = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
         }
+
         return bookCover;
     }
 
