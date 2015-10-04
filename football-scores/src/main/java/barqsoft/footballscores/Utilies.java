@@ -2,34 +2,31 @@ package barqsoft.footballscores;
 
 import android.content.Context;
 
+import de.gruenewald.android.footballscores.LeagueCodes;
+
 /**
  * Created by yehya khaled on 3/3/2015.
+ * Modified by jan.gruenewald84@googlemail.com on 04/10/2015.
  */
 public class Utilies {
-    public static final int SERIE_A = 357;
-    public static final int PREMIER_LEGAUE = 354;
-    public static final int CHAMPIONS_LEAGUE = 362;
-    public static final int PRIMERA_DIVISION = 358;
-    public static final int BUNDESLIGA = 351;
-
     public static String getLeague(int league_num, Context pContext) {
         // Edit JG: fetching strings from strings.xml instead of static strings
         // setting value of return value instead of returning directly in switch (bad style)
         String myLeagueName;
         switch (league_num) {
-            case SERIE_A:
+            case LeagueCodes.SERIE_A:
                 myLeagueName = pContext.getString(R.string.seriaa);
                 break;
-            case PREMIER_LEGAUE:
+            case LeagueCodes.PREMIER_LEAGUE:
                 myLeagueName = pContext.getString(R.string.premierleague);
                 break;
-            case CHAMPIONS_LEAGUE:
+            case LeagueCodes.CHAMPIONS_LEAGUE:
                 myLeagueName = pContext.getString(R.string.champions_league);
                 break;
-            case PRIMERA_DIVISION:
+            case LeagueCodes.PRIMERA_DIVISION:
                 myLeagueName = pContext.getString(R.string.primeradivison);
                 break;
-            case BUNDESLIGA:
+            case LeagueCodes.BUNDESLIGA1:
                 myLeagueName = pContext.getString(R.string.bundesliga);
                 break;
             default:
@@ -40,7 +37,7 @@ public class Utilies {
     }
 
     public static String getMatchDay(int match_day, int league_num) {
-        if (league_num == CHAMPIONS_LEAGUE) {
+        if (league_num == LeagueCodes.CHAMPIONS_LEAGUE) {
             if (match_day <= 6) {
                 return "Group Stages, Matchday : 6";
             } else if (match_day == 7 || match_day == 8) {

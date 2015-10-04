@@ -25,6 +25,7 @@ import java.util.Vector;
 
 import barqsoft.footballscores.DatabaseContract;
 import barqsoft.footballscores.R;
+import de.gruenewald.android.footballscores.LeagueCodes;
 
 /**
  * Created by yehya khaled on 3/2/2015.
@@ -122,20 +123,6 @@ public class MyFetchService extends IntentService {
 
     private void processJSONdata(String JSONdata, Context mContext, boolean isReal) {
         //JSON data
-        // This set of league codes is for the 2015/2016 season. In fall of 2016, they will need to
-        // be updated. Feel free to use the codes
-        final String BUNDESLIGA1 = "394";
-        final String BUNDESLIGA2 = "395";
-        final String PREMIER_LEAGUE = "398";
-        final String PRIMERA_DIVISION = "399";
-        final String SERIE_A = "401";
-        // Edit JG: comment out unused leagues
-//        final String LIGUE1 = "396";
-//        final String LIGUE2 = "397";
-//        final String SEGUNDA_DIVISION = "400";
-//        final String PRIMERA_LIGA = "402";
-//        final String Bundesliga3 = "403";
-//        final String EREDIVISIE = "404";
 
         final String SEASON_LINK = "http://api.football-data.org/alpha/soccerseasons/";
         final String MATCH_LINK = "http://api.football-data.org/alpha/fixtures/";
@@ -172,18 +159,20 @@ public class MyFetchService extends IntentService {
             for (int i = 0; i < matches.length(); i++) {
 
                 JSONObject match_data = matches.getJSONObject(i);
-                League = match_data.getJSONObject(LINKS).getJSONObject(SOCCER_SEASON).
-                        getString("href");
+                League = match_data.getJSONObject(LINKS).getJSONObject(SOCCER_SEASON).getString("href");
                 League = League.replace(SEASON_LINK, "");
+                // Edit JG: handling the the id of the league as integer (since it's saved in the
+                // database as int)
+                int myLeagueCode = Integer.parseInt(League);
                 //This if statement controls which leagues we're interested in the data from.
                 //add leagues here in order to have them be added to the DB.
                 // If you are finding no data in the app, check that this contains all the leagues.
                 // If it doesn't, that can cause an empty DB, bypassing the dummy data routine.
-                if (League.equals(PREMIER_LEAGUE) ||
-                        League.equals(SERIE_A) ||
-                        League.equals(BUNDESLIGA1) ||
-                        League.equals(BUNDESLIGA2) ||
-                        League.equals(PRIMERA_DIVISION)) {
+                if (myLeagueCode == LeagueCodes.PREMIER_LEAGUE
+                        || myLeagueCode == LeagueCodes.SERIE_A
+                        || myLeagueCode == LeagueCodes.BUNDESLIGA1
+                        || myLeagueCode == LeagueCodes.BUNDESLIGA2
+                        || myLeagueCode == LeagueCodes.PRIMERA_DIVISION) {
                     match_id = match_data.getJSONObject(LINKS).getJSONObject(SELF).
                             getString("href");
                     match_id = match_id.replace(MATCH_LINK, "");
