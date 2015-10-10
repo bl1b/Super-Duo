@@ -170,11 +170,14 @@ public class MyFetchService extends IntentService {
                 //add leagues here in order to have them be added to the DB.
                 // If you are finding no data in the app, check that this contains all the leagues.
                 // If it doesn't, that can cause an empty DB, bypassing the dummy data routine.
-                if (myLeagueCode == LeagueCodes.PREMIER_LEAGUE
-                        || myLeagueCode == LeagueCodes.SERIE_A
-                        || myLeagueCode == LeagueCodes.BUNDESLIGA1
-                        || myLeagueCode == LeagueCodes.BUNDESLIGA2
-                        || myLeagueCode == LeagueCodes.PRIMERA_DIVISION) {
+                boolean isActiveLeague = false;
+                for (int league : LeagueCodes.ACTIVE_LEAGUES) {
+                    if (myLeagueCode == league) {
+                        isActiveLeague = true;
+                        break;
+                    }
+                }
+                if (isActiveLeague) {
                     match_id = match_data.getJSONObject(LINKS).getJSONObject(SELF).
                             getString("href");
                     match_id = match_id.replace(MATCH_LINK, "");

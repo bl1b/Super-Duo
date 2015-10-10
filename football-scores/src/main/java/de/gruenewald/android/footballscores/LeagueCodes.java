@@ -45,7 +45,22 @@ public class LeagueCodes {
     public static final int SEGUNDA_DIVISION = 400;
     public static final int SERIE_A = 401;
     public static final int PRIMERA_LIGA = 402;
-    public static final int Bundesliga3 = 403;
+    public static final int BUNDESLIGA3 = 403;
     public static final int EREDIVISIE = 404;
     public static final int CHAMPIONS_LEAGUE = 405;
+
+    public static final int[] ACTIVE_LEAGUES = {
+            BUNDESLIGA1,
+            BUNDESLIGA2,
+            LIGUE1,
+            LIGUE2,
+            PREMIER_LEAGUE,
+            PRIMERA_DIVISION,
+            SEGUNDA_DIVISION,
+            SERIE_A,
+            PRIMERA_LIGA,
+            BUNDESLIGA3,
+            EREDIVISIE,
+            CHAMPIONS_LEAGUE
+    };
 }
