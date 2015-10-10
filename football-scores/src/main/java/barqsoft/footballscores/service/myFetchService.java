@@ -46,7 +46,7 @@ public class MyFetchService extends IntentService {
 
     private void getData(String timeFrame) {
         //Creating fetch URL
-        final String BASE_URL = "http://api.football-data.org/alpha/fixtures"; //Base URL
+        final String BASE_URL = getString(R.string.api_uri_fixtures); //Base URL
         final String QUERY_TIME_FRAME = "timeFrame"; //Time Frame parameter to determine days
         //final String QUERY_MATCH_DAY = "matchday";
 
@@ -68,6 +68,7 @@ public class MyFetchService extends IntentService {
             InputStream inputStream = m_connection.getInputStream();
             StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
+                Log.e(LOG_TAG, "Can't retrieve match-data. InputStream is null.");
                 // Nothing to do.
                 return;
             }
@@ -82,6 +83,7 @@ public class MyFetchService extends IntentService {
             }
             if (buffer.length() == 0) {
                 // Stream was empty.  No point in parsing.
+                Log.e(LOG_TAG, "Nothing could be read from the match inputstream.");
                 return;
             }
             JSON_data = buffer.toString();
@@ -124,8 +126,8 @@ public class MyFetchService extends IntentService {
     private void processJSONdata(String JSONdata, Context mContext, boolean isReal) {
         //JSON data
 
-        final String SEASON_LINK = "http://api.football-data.org/alpha/soccerseasons/";
-        final String MATCH_LINK = "http://api.football-data.org/alpha/fixtures/";
+        final String SEASON_LINK = getString(R.string.api_uri_seasons);
+        final String MATCH_LINK = getString(R.string.api_uri_fixtures);
         final String FIXTURES = "fixtures";
         final String LINKS = "_links";
         final String SOCCER_SEASON = "soccerseason";
