@@ -41,4 +41,6 @@
     <string name="description_image_away">Club logo of the away team.</string>
     <string name="error_unknown_league">Not known League Please report</string>
     <string name="football_scores_hashtag" translatable="false">#Football_Scores</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
