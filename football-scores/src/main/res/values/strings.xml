@@ -8,12 +8,20 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="tomorrow">Tomorrow</string>
-    <string name="champions_league" translatable="false">UEFA Champions League</string>
-    <string name="bundesliga" translatable="false">Bundesliga</string>
-    <string name="bundesliga2" translatable="false">Zweite Bundesliga</string>
+    <!-- Names of leagues -->
+    <string name="bundesliga" translatable="false">1. Bundesliga</string>
+    <string name="bundesliga2" translatable="false">2. Bundesliga</string>
+    <string name="ligue1" translatable="false">Ligue 1</string>
+    <string name="ligue2" translatable="false">Ligue 1</string>
     <string name="premierleague" translatable="false">Premier League</string>
     <string name="primeradivison" translatable="false">Primera Division</string>
+    <string name="segundadivison" translatable="false">Segunda Division</string>
     <string name="seriaa" translatable="false">Serie A</string>
+    <string name="primeiraliga" translatable="false">Primeira Liga</string>
+    <string name="bundesliga3" translatable="false">3. Bundesliga</string>
+    <string name="eredivisie" translatable="false">Eredivisie</string>
+    <string name="champions_league" translatable="false">UEFA Champions League</string>
+    <!-- End: Names of leagues -->
     <string name="matchday_text">Match day</string>
     <string name="group_stage_text">Group stages</string>
     <string name="first_knockout_round">First knockout round</string>

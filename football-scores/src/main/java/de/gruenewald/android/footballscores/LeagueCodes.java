@@ -44,7 +44,7 @@ public class LeagueCodes {
     public static final int PRIMERA_DIVISION = 399;
     public static final int SEGUNDA_DIVISION = 400;
     public static final int SERIE_A = 401;
-    public static final int PRIMERA_LIGA = 402;
+    public static final int PRIMEIRA_LIGA = 402;
     public static final int BUNDESLIGA3 = 403;
     public static final int EREDIVISIE = 404;
     public static final int CHAMPIONS_LEAGUE = 405;
@@ -58,7 +58,7 @@ public class LeagueCodes {
             PRIMERA_DIVISION,
             SEGUNDA_DIVISION,
             SERIE_A,
-            PRIMERA_LIGA,
+            PRIMEIRA_LIGA,
             BUNDESLIGA3,
             EREDIVISIE,
             CHAMPIONS_LEAGUE

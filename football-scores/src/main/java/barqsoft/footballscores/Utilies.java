@@ -9,25 +9,47 @@ import de.gruenewald.android.footballscores.LeagueCodes;
  * Modified by jan.gruenewald84@googlemail.com on 04/10/2015.
  */
 public class Utilies {
+
     public static String getLeague(int league_num, Context pContext) {
         // Edit JG: fetching strings from strings.xml instead of static strings
         // setting value of return value instead of returning directly in switch (bad style)
         String myLeagueName;
         switch (league_num) {
-            case LeagueCodes.SERIE_A:
-                myLeagueName = pContext.getString(R.string.seriaa);
+            case LeagueCodes.BUNDESLIGA1:
+                myLeagueName = pContext.getString(R.string.bundesliga);
+                break;
+            case LeagueCodes.BUNDESLIGA2:
+                myLeagueName = pContext.getString(R.string.bundesliga2);
+                break;
+            case LeagueCodes.LIGUE1:
+                myLeagueName = pContext.getString(R.string.ligue1);
+                break;
+            case LeagueCodes.LIGUE2:
+                myLeagueName = pContext.getString(R.string.ligue2);
                 break;
             case LeagueCodes.PREMIER_LEAGUE:
                 myLeagueName = pContext.getString(R.string.premierleague);
                 break;
-            case LeagueCodes.CHAMPIONS_LEAGUE:
-                myLeagueName = pContext.getString(R.string.champions_league);
-                break;
             case LeagueCodes.PRIMERA_DIVISION:
                 myLeagueName = pContext.getString(R.string.primeradivison);
                 break;
-            case LeagueCodes.BUNDESLIGA1:
-                myLeagueName = pContext.getString(R.string.bundesliga);
+            case LeagueCodes.SEGUNDA_DIVISION:
+                myLeagueName = pContext.getString(R.string.segundadivison);
+                break;
+            case LeagueCodes.SERIE_A:
+                myLeagueName = pContext.getString(R.string.seriaa);
+                break;
+            case LeagueCodes.PRIMEIRA_LIGA:
+                myLeagueName = pContext.getString(R.string.primeiraliga);
+                break;
+            case LeagueCodes.BUNDESLIGA3:
+                myLeagueName = pContext.getString(R.string.bundesliga3);
+                break;
+            case LeagueCodes.EREDIVISIE:
+                myLeagueName = pContext.getString(R.string.eredivisie);
+                break;
+            case LeagueCodes.CHAMPIONS_LEAGUE:
+                myLeagueName = pContext.getString(R.string.champions_league);
                 break;
             default:
                 myLeagueName = pContext.getString(R.string.error_unknown_league);
