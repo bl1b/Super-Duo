@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import de.gruenewald.android.footballscores.ScoresHelper;
+
 /**
  * Created by yehya khaled on 2/26/2015.
  */
@@ -132,12 +134,12 @@ public class ScoresAdapter extends CursorAdapter {
             // resolution and will look terrible on wide screens
             if (v.findViewById(R.id.share_button) instanceof Button) {
                 Button share_button = (Button) v.findViewById(R.id.share_button);
-                Spannable myButtonLabel = new SpannableString(" Testing");
-                myButtonLabel.setSpan(
-                        new ImageSpan(context.getApplicationContext(), R.drawable.everton_fc_logo1, ImageSpan.ALIGN_BOTTOM),
-                        0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-                share_button.setText(myButtonLabel);
+                //share_button.setTransformationMethod(null);
+                share_button.setText(ScoresHelper.createLeftImageSpannable(
+                        context,
+                        R.string.share_text,
+                        R.drawable.abc_ic_menu_share_mtrl_alpha
+                ));
                 share_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

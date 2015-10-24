@@ -42,8 +42,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:contentDescription="@string/share_text"
-            android:gravity="center"
-            android:text="@string/share_text"/>
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/share_text"
+            android:textAllCaps="false"/>
 
     </FrameLayout>
 
