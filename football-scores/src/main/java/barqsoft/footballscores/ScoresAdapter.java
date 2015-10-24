@@ -3,8 +3,13 @@ package barqsoft.footballscores;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.widget.CursorAdapter;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +20,8 @@ import android.widget.TextView;
  * Created by yehya khaled on 2/26/2015.
  */
 public class ScoresAdapter extends CursorAdapter {
+    private static final String LOG_TAG = ScoresAdapter.class.getSimpleName();
+
     public static final int COL_HOME = 3;
     public static final int COL_AWAY = 4;
     public static final int COL_HOME_GOALS = 6;
@@ -45,45 +52,106 @@ public class ScoresAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
         final ViewHolder mHolder = (ViewHolder) view.getTag();
-        mHolder.home_name.setText(cursor.getString(COL_HOME));
-        mHolder.away_name.setText(cursor.getString(COL_AWAY));
-        mHolder.date.setText(cursor.getString(COL_MATCHTIME));
-        mHolder.score.setText(Utilies.getScores(cursor.getInt(COL_HOME_GOALS), cursor.getInt(COL_AWAY_GOALS)));
+        // Edit JG: handle home/away-team text+icon combination as compound drawable to increase
+        // performance
+        if (mHolder.home_name != null) {
+            mHolder.home_name.setText(cursor.getString(COL_HOME));
+            Drawable myHomeCrest;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                myHomeCrest = context.getDrawable(Utilies.getTeamCrestByTeamName(cursor.getString(COL_HOME)));
+            } else {
+                // we can suppress the deprecation here because we need to support API Level 10
+                // the non-deprecated method to use was added in LOLLIPOP
+                //noinspection deprecation
+                myHomeCrest = context.getResources().getDrawable(Utilies.getTeamCrestByTeamName(cursor.getString(COL_HOME)));
+            }
+            if (myHomeCrest != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    mHolder.home_name.setCompoundDrawablesWithIntrinsicBounds(null, myHomeCrest, null, null);
+                } else {
+                    // TODO: call setBounds on drawable with correct dimensions
+                    mHolder.home_name.setCompoundDrawables(null, myHomeCrest, null, null);
+                }
+            }
+        }
+
+        if (mHolder.away_name != null) {
+            mHolder.away_name.setText(cursor.getString(COL_AWAY));
+            Drawable myAwayCrest;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                myAwayCrest = context.getDrawable(Utilies.getTeamCrestByTeamName(cursor.getString(COL_AWAY)));
+            } else {
+                // we can suppress the deprecation here because we need to support API Level 10
+                // the non-deprecated method to use was added in LOLLIPOP
+                //noinspection deprecation
+                myAwayCrest = context.getResources().getDrawable(Utilies.getTeamCrestByTeamName(cursor.getString(COL_AWAY)));
+            }
+            if (myAwayCrest != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    mHolder.away_name.setCompoundDrawablesWithIntrinsicBounds(null, myAwayCrest, null, null);
+                } else {
+                    // TODO: call setBounds on drawable with correct dimensions
+                    mHolder.away_name.setCompoundDrawables(null, myAwayCrest, null, null);
+                }
+            }
+        }
+
+        if (mHolder.date != null) {
+            mHolder.date.setText(cursor.getString(COL_MATCHTIME));
+        }
+
+        if (mHolder.score != null) {
+            mHolder.score.setText(Utilies.getScores(cursor.getInt(COL_HOME_GOALS), cursor.getInt(COL_AWAY_GOALS)));
+        }
+
         mHolder.match_id = cursor.getDouble(COL_ID);
-        mHolder.home_crest.setImageResource(Utilies.getTeamCrestByTeamName(
-                cursor.getString(COL_HOME)));
-        mHolder.away_crest.setImageResource(Utilies.getTeamCrestByTeamName(
-                cursor.getString(COL_AWAY)
-        ));
-        //Log.v(FetchScoreTask.LOG_TAG,mHolder.home_name.getText() + " Vs. " + mHolder.away_name.getText() +" id " + String.valueOf(mHolder.match_id));
-        //Log.v(FetchScoreTask.LOG_TAG,String.valueOf(detail_match_id));
-        LayoutInflater vi = (LayoutInflater) context.getApplicationContext()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = vi.inflate(R.layout.detail_fragment, null);
+
+        // Edit JG: always remove childs from fragment_container to avoid potential overlapping
+        // elements
         ViewGroup container = (ViewGroup) view.findViewById(R.id.details_fragment_container);
+        container.removeAllViews();
+
         if (mHolder.match_id == detail_match_id) {
             //Log.v(FetchScoreTask.LOG_TAG,"will insert extraView");
+            // Edit JG: only instantiate a LayoutInflater and inflate a layout if it's really
+            // required
+            LayoutInflater vi = (LayoutInflater) context.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v = vi.inflate(R.layout.detail_fragment, null);
 
-            container.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
-                    , ViewGroup.LayoutParams.MATCH_PARENT));
+            // setup the Matchday-Label
             TextView match_day = (TextView) v.findViewById(R.id.matchday_textview);
-            match_day.setText(Utilies.getMatchDay(cursor.getInt(COL_MATCHDAY),
-                    cursor.getInt(COL_LEAGUE)));
+            match_day.setText(Utilies.getMatchDay(cursor.getInt(COL_MATCHDAY), cursor.getInt(COL_LEAGUE)));
+
+            // setup the League-Label
             TextView league = (TextView) v.findViewById(R.id.league_textview);
             league.setText(Utilies.getLeague(cursor.getInt(COL_LEAGUE), context));
-            Button share_button = (Button) v.findViewById(R.id.share_button);
-            share_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //add Share Action
-                    context.startActivity(createShareForecastIntent(mHolder.home_name.getText() + " "
-                            + mHolder.score.getText() + " " + mHolder.away_name.getText() + " "));
-                }
-            });
+
+            // setup the Share-Button
+            // Edit JG: setup the image/text combination for the Share-Button as Spannable
+            // because "centering" the drawableLeft with padding makes it depending on the
+            // resolution and will look terrible on wide screens
+            if (v.findViewById(R.id.share_button) instanceof Button) {
+                Button share_button = (Button) v.findViewById(R.id.share_button);
+                Spannable myButtonLabel = new SpannableString(" Testing");
+                myButtonLabel.setSpan(
+                        new ImageSpan(context.getApplicationContext(), R.drawable.everton_fc_logo1, ImageSpan.ALIGN_BOTTOM),
+                        0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+                share_button.setText(myButtonLabel);
+                share_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //add Share Action
+                        context.startActivity(createShareForecastIntent(mHolder.home_name.getText() + " "
+                                + mHolder.score.getText() + " " + mHolder.away_name.getText() + " "));
+                    }
+                });
+                share_button.invalidate();
+            }
+            container.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else {
             container.removeAllViews();
         }
-
     }
 
     public Intent createShareForecastIntent(String ShareText) {
