@@ -2,6 +2,7 @@ package barqsoft.footballscores;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -157,6 +158,9 @@ public class ScoresProvider extends ContentProvider
                     db.endTransaction();
                 }
                 getContext().getContentResolver().notifyChange(uri,null);
+                // edit jg: when data has been inserted we send a broadcast to update the widgets
+                Intent dataInsertedIntent = new Intent(MainActivity.ACTION_DATA_UPDATED);
+                getContext().sendBroadcast(dataInsertedIntent);
                 return returncount;
             default:
                 return super.bulkInsert(uri,values);

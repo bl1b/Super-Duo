@@ -28,15 +28,18 @@ package de.gruenewald.android.footballscores;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 
+import barqsoft.footballscores.MainActivity;
 import barqsoft.footballscores.R;
 
 /**
  * Implementation of App Widget functionality.
  */
 public class ScoresWidget extends AppWidgetProvider {
-
+    private static final String LOG_TAG = ScoresWidget.class.getSimpleName();
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
@@ -57,16 +60,23 @@ public class ScoresWidget extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+
 
         CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.scores_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
+//        views.setTextViewText(R.id.appwidget_text, widgetText);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    @Override public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        if (MainActivity.ACTION_DATA_UPDATED.equals(intent.getAction())) {
+            Log.i(LOG_TAG, "Received data update");
+        }
     }
 }
 
