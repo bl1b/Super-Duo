@@ -27,21 +27,33 @@ package de.gruenewald.android.footballscores;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.os.Build;
 import android.widget.RemoteViews;
 
 import barqsoft.footballscores.MainActivity;
 import barqsoft.footballscores.R;
+import barqsoft.footballscores.service.MyWidgetUpdateService;
 
 /**
  * Implementation of App Widget functionality.
  */
-public class ScoresWidget extends AppWidgetProvider {
-    private static final String LOG_TAG = ScoresWidget.class.getSimpleName();
+public class ScoresSingleWidget extends AppWidgetProvider {
+    private static final String LOG_TAG = ScoresSingleWidget.class.getSimpleName();
+
+    private AppWidgetManager mAppWidgetManager;
+    private int[] mAppWidgetIds;
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        mAppWidgetManager = appWidgetManager;
+        mAppWidgetIds = appWidgetIds;
+
+        Intent myUpdateIntent = new Intent(context, MyWidgetUpdateService.class);
+        context.startService(myUpdateIntent);
+
         // There may be multiple widgets active, so update all of them
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
@@ -61,21 +73,36 @@ public class ScoresWidget extends AppWidgetProvider {
     }
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+        AppWidgetProviderInfo myAppWidgetProviderInfo = null;
+        if (appWidgetManager != null) {
+            myAppWidgetProviderInfo = appWidgetManager.getAppWidgetInfo(appWidgetId);
+        }
+
+        if (myAppWidgetProviderInfo != null) {
+            String label = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                label = myAppWidgetProviderInfo.loadLabel(context.getPackageManager());
+            } else {
+                label = myAppWidgetProviderInfo.label;
+            }
 
 
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
-        // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.scores_widget);
-//        views.setTextViewText(R.id.appwidget_text, widgetText);
-
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.scores_widget_single);
+            // views.setTextViewText(R.id.home_name,);
+            // Instruct the widget manager to update the widget
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
     }
 
     @Override public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         if (MainActivity.ACTION_DATA_UPDATED.equals(intent.getAction())) {
-            Log.i(LOG_TAG, "Received data update");
+            if (intent.getParcelableExtra(MainActivity.EXTRA_DBDATA) instanceof ScoresEntry
+                    && mAppWidgetIds != null && mAppWidgetManager != null) {
+                for (int i = 0; i < mAppWidgetIds.length; i++) {
+                    updateAppWidget(context, mAppWidgetManager, mAppWidgetIds[i]);
+                }
+            }
         }
     }
 }

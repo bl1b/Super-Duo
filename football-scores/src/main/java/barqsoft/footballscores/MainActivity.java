@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity
     private PagerFragment my_main;
 
     public static final String ACTION_DATA_UPDATED = "barqsoft.footballscores.ACTION_DATA_UPDATED";
+    public static final String EXTRA_DBDATA = "barqsoft.footballscores.extra.SCORES_DBDATA";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

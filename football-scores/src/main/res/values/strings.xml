@@ -54,4 +54,6 @@
     <string name="football_scores_hashtag" translatable="false">#Football_Scores</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="scores_widget_single_label">Last Result Widget</string>
+    <string name="scores_widget_collection_label">Last Results</string>
 </resources>

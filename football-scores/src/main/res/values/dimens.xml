@@ -9,6 +9,8 @@
     <dimen name="League">15sp</dimen>
 
     <dimen name="widget_scores_margin">8dp</dimen>
-    <dimen name="widget_scores_width_min">130dp</dimen>
-    <dimen name="widget_scores_height_min">40dp</dimen>
+    <dimen name="scores_widget_single_width_min">130dp</dimen>
+    <dimen name="scores_widget_single_height_min">40dp</dimen>
+    <dimen name="scores_widget_collection_width_min">180dp</dimen>
+    <dimen name="scores_widget_collection_height_min">180dp</dimen>
 </resources>
