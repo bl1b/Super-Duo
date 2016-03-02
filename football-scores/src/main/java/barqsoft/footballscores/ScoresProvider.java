@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import barqsoft.footballscores.service.MyWidgetUpdateService;
 
 /**
  * Created by yehya khaled on 2/25/2015.
@@ -159,8 +160,8 @@ public class ScoresProvider extends ContentProvider
                 }
                 getContext().getContentResolver().notifyChange(uri,null);
                 // edit jg: when data has been inserted we send a broadcast to update the widgets
-                Intent dataInsertedIntent = new Intent(MainActivity.ACTION_DATA_UPDATED);
-                getContext().sendBroadcast(dataInsertedIntent);
+                Intent widgetUpdateIntent = new Intent(getContext(), MyWidgetUpdateService.class);
+                getContext().startService(widgetUpdateIntent);
                 return returncount;
             default:
                 return super.bulkInsert(uri,values);
