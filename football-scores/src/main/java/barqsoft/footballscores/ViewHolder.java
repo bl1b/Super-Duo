@@ -14,12 +14,12 @@ public class ViewHolder {
     public double match_id;
 
     public ViewHolder(View view) {
-        if (view.findViewById(R.id.home_name) instanceof TextView) {
-            home_name = (TextView) view.findViewById(R.id.home_name);
+        if (view.findViewById(R.id.scores_widget_single_home_name) instanceof TextView) {
+            home_name = (TextView) view.findViewById(R.id.scores_widget_single_home_name);
         }
 
-        if (view.findViewById(R.id.away_name) instanceof TextView) {
-            away_name = (TextView) view.findViewById(R.id.away_name);
+        if (view.findViewById(R.id.scores_widget_single_away_name) instanceof TextView) {
+            away_name = (TextView) view.findViewById(R.id.scores_widget_single_away_name);
         }
 
         if (view.findViewById(R.id.score_textview) instanceof TextView) {
