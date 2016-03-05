@@ -25,12 +25,12 @@
 
 package de.gruenewald.android.footballscores;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.widget.RemoteViews;
 
 import barqsoft.footballscores.MainActivity;
@@ -43,24 +43,15 @@ import barqsoft.footballscores.service.MyWidgetUpdateService;
 public class ScoresSingleWidget extends AppWidgetProvider {
     private static final String LOG_TAG = ScoresSingleWidget.class.getSimpleName();
 
-    private AppWidgetManager mAppWidgetManager;
-    private int[] mAppWidgetIds;
+    private ScoresEntry currentWidgetData;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        mAppWidgetManager = appWidgetManager;
-        mAppWidgetIds = appWidgetIds;
-
+        //IntentService will fetch current data and then invoke a broadcast which is received by the onReceive()
+        //method
         Intent myUpdateIntent = new Intent(context, MyWidgetUpdateService.class);
         context.startService(myUpdateIntent);
-
-        // There may be multiple widgets active, so update all of them
-        final int N = appWidgetIds.length;
-        for (int i = 0; i < N; i++) {
-            updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
-        }
     }
-
 
     @Override
     public void onEnabled(Context context) {
@@ -72,36 +63,47 @@ public class ScoresSingleWidget extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
-        AppWidgetProviderInfo myAppWidgetProviderInfo = null;
-        if (appWidgetManager != null) {
-            myAppWidgetProviderInfo = appWidgetManager.getAppWidgetInfo(appWidgetId);
-        }
+    private void updateAppWidget(Context context, ScoresEntry widgetData) {
+        AppWidgetManager myManager = AppWidgetManager.getInstance(context);
+        if (myManager != null && widgetData != null) {
 
-        if (myAppWidgetProviderInfo != null) {
-            String label = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                label = myAppWidgetProviderInfo.loadLabel(context.getPackageManager());
-            } else {
-                label = myAppWidgetProviderInfo.label;
-            }
+            ComponentName myComponentName = new ComponentName(context.getPackageName(), ScoresSingleWidget.class.getName());
+            //there may be several widgets to update; so we have to fetch the ids
+            int[] myAppWidgetIds = myManager.getAppWidgetIds(myComponentName);
 
+            Intent mainIntent = new Intent(context, MainActivity.class);
+            PendingIntent startIntent = PendingIntent.getActivity(context, 0, mainIntent, 0);
+            //fetch the remoteview (layout) for the widget, set its properties and update
+            String homeGoals = Integer.toString(Math.max(0, widgetData.getHomeGoals()));
+            String awayGoals = Integer.toString(Math.max(0, widgetData.getAwayGoals()));
+            String scoreString = homeGoals.concat(" - ").concat(awayGoals);
 
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.scores_widget_single);
-            // views.setTextViewText(R.id.home_name,);
-            // Instruct the widget manager to update the widget
-            appWidgetManager.updateAppWidget(appWidgetId, views);
+            views.setOnClickPendingIntent(R.id.layout_scores_widget_single, startIntent);
+            views.setTextViewText(R.id.scores_widget_single_home_name, widgetData.getHomeTeam());
+            views.setTextViewText(R.id.scores_widget_single_score, scoreString);
+            views.setTextViewText(R.id.scores_widget_single_away_name, widgetData.getAwayTeam());
+
+            for (int i = 0; i < myAppWidgetIds.length; i++) {
+                // Instruct the widget manager to update the widget
+                myManager.updateAppWidget(myAppWidgetIds[i], views);
+            }
         }
     }
 
-    @Override public void onReceive(Context context, Intent intent) {
+    /**
+     * Receives broadcasts.
+     * Broadcast will be send when data has been updated.
+     *
+     * @param context
+     * @param intent
+     */
+    @Override
+    public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         if (MainActivity.ACTION_DATA_UPDATED.equals(intent.getAction())) {
-            if (intent.getParcelableExtra(MainActivity.EXTRA_DBDATA) instanceof ScoresEntry
-                    && mAppWidgetIds != null && mAppWidgetManager != null) {
-                for (int i = 0; i < mAppWidgetIds.length; i++) {
-                    updateAppWidget(context, mAppWidgetManager, mAppWidgetIds[i]);
-                }
+            if (intent.getParcelableExtra(MainActivity.EXTRA_DBDATA) instanceof ScoresEntry) {
+                updateAppWidget(context, (ScoresEntry) intent.getParcelableExtra(MainActivity.EXTRA_DBDATA));
             }
         }
     }

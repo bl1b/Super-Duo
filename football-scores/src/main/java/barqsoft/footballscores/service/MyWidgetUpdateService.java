@@ -76,7 +76,7 @@ public class MyWidgetUpdateService extends IntentService {
                 DatabaseContract.scores_table.MATCH_ID + " DESC"
         );
 
-        if (myDataCursor != null && myDataCursor.getCount() > 0) {
+        if (myDataCursor != null && myDataCursor.getCount() > 0 && myDataCursor.moveToFirst()) {
             Log.i(SERVICE_NAME, "Data retrieved.");
             ScoresEntry myDbEntry = new ScoresEntry();
             myDbEntry.setId(myDataCursor.getInt(myDataCursor.getColumnIndex(DatabaseContract.scores_table.MATCH_ID)));

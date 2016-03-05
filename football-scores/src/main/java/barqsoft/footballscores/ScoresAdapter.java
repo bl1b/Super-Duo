@@ -134,7 +134,7 @@ public class ScoresAdapter extends CursorAdapter {
                 share_button.setText(ScoresHelper.createLeftImageSpannable(
                         context,
                         R.string.share_text,
-                        R.drawable.abc_ic_menu_share_mtrl_alpha
+                        android.support.v7.appcompat.R.drawable.abc_ic_menu_share_mtrl_alpha
                 ));
                 share_button.setOnClickListener(new View.OnClickListener() {
                     @Override
