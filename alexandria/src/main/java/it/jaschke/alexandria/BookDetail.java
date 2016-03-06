@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -32,8 +31,6 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     private static final int LOADER_ID = 10;
     private View rootView;
     private String ean;
-    private String bookTitle;
-    private ShareActionProvider shareActionProvider;
     private Intent shareIntent;
 
     public BookDetail() {
@@ -76,7 +73,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         inflater.inflate(R.menu.book_detail, menu);
 
         MenuItem menuItem = menu.findItem(R.id.action_share);
-        shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+        ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
         if (shareIntent != null) {
             shareActionProvider.setShareIntent(shareIntent);
         }
@@ -101,38 +98,46 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
             return;
         }
 
-        if (rootView.findViewById(R.id.fullBookTitle) instanceof TextView) {
-            bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
+        String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
+        if (bookTitle != null && rootView.findViewById(R.id.fullBookTitle) instanceof TextView) {
             ((TextView) rootView.findViewById(R.id.fullBookTitle)).setText(bookTitle);
         }
 
-        if (shareIntent != null && bookTitle != null) {
-            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text).concat(bookTitle));
+        String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
+        if (bookSubTitle != null && rootView.findViewById(R.id.fullBookSubTitle) instanceof TextView) {
+            ((TextView) rootView.findViewById(R.id.fullBookSubTitle)).setText(bookSubTitle);
         }
 
-        String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
-        ((TextView) rootView.findViewById(R.id.fullBookSubTitle)).setText(bookSubTitle);
-
         String desc = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.DESC));
-        ((TextView) rootView.findViewById(R.id.fullBookDesc)).setText(desc);
+        if (desc != null && rootView.findViewById(R.id.fullBookDesc) instanceof TextView) {
+            ((TextView) rootView.findViewById(R.id.fullBookDesc)).setText(desc);
+        }
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        String[] authorsArr = authors.split(",");
-        ((TextView) rootView.findViewById(R.id.authors)).setLines(authorsArr.length);
-        ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",", "\n"));
+        if (authors != null && rootView.findViewById(R.id.authors) instanceof TextView) {
+            String[] authorsArr = authors.split(",");
+            ((TextView) rootView.findViewById(R.id.authors)).setLines(authorsArr.length);
+            ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",", "\n"));
+        }
+
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-        if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
+        if (imgUrl != null && Patterns.WEB_URL.matcher(imgUrl).matches()) {
             new DownloadImage((ImageView) rootView.findViewById(R.id.fullBookCover)).execute(imgUrl);
             rootView.findViewById(R.id.fullBookCover).setVisibility(View.VISIBLE);
         }
 
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
-        ((TextView) rootView.findViewById(R.id.categories)).setText(categories);
+        if (categories != null && rootView.findViewById(R.id.categories) instanceof TextView) {
+            ((TextView) rootView.findViewById(R.id.categories)).setText(categories);
+        }
 
         if (rootView.findViewById(R.id.right_container) != null) {
             rootView.findViewById(R.id.backButton).setVisibility(View.INVISIBLE);
         }
 
+        if (shareIntent != null && bookTitle != null) {
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text).concat(bookTitle));
+        }
     }
 
     @Override
